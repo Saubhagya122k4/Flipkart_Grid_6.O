@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fruit Freshness Analysis</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0; /* Light background color */
+        }
+        .container {
+            max-width: 800px; /* Increased max-width for container */
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        #video {
+            width: 100%;
+            max-width: 400px; /* Maintained original size */
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            border: 1px solid #ddd;
+        }
+        .controls {
+            text-align: center;
+            margin-top: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 0 10px;
+        }
+        #result {
+            margin-top: 20px;
+            white-space: pre-wrap;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .back-link {
+            display: block;
+            margin-bottom: 20px;
+            text-decoration: none;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">&larr; Back to Dashboard</a>
+        <h1>Fruit Freshness Analysis</h1>
+        <video id="video" autoplay></video>
+        <div class="controls">
+            <button id="startBtn">Start Analysis</button>
+            <button id="stopBtn">Stop Analysis</button>
+        </div>
+        <div id="result">Analysis results will appear here</div>
+    </div>
+
+    <script>
+        const video = document.getElementById('video');
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const result = document.getElementById('result');
+        const socket = io();
+
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+            })
+            .catch(err => {
+                console.error("Error accessing the camera:", err);
+            });
+
+        function captureFrame() {
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            return canvas.toDataURL('image/jpeg');
+        }
+
+        startBtn.addEventListener('click', () => {
+            socket.emit('start_analysis', { option: 'fruit_freshness' });
+            result.textContent = 'Analysis started...';
+        });
+
+        stopBtn.addEventListener('click', () => {
+            socket.emit('stop_analysis');
+            result.textContent = 'Analysis stopped.';
+        });
+
+        socket.on('request_frame', () => {
+            const frameData = captureFrame();
+            socket.emit('frame', { image: frameData, option: 'fruit_freshness' });
+        });
+
+        socket.on('analysis_result', (data) => {
+            if (data.error) {
+                result.textContent = 'Error: ' + data.error;
+            } else {
+                result.textContent = data.result;
+            }
+        });
+    </script>
+</body>
+</html>

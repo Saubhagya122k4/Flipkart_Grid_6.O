@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Analysis Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        .options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .option {
+            padding: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .option:hover {
+            background-color: #d0d0d0;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Product Analysis Dashboard</h1>
+        <div class="options">
+            <a href="brand_recognition.html" class="option">
+                <div>Brand Recognition</div>
+            </a>
+            <a href="expiry_and_mrp.html" class="option">
+                <div>Expiry and MRP</div>
+            </a>
+            <a href="branddetails_and_packsize.html">
+                <div class="option">Brand Details and Pack Size</div>
+            </a>
+            <a href="freshness_detetction.html">
+                <div class="option">Freshness Detection</div>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
